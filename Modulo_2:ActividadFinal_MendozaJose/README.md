@@ -60,9 +60,9 @@ El sistema implementa principios de POO:
   - **Camión**: Planilla de carga y peso máximo
 
 ### Operaciones
-- ✅ Inicio de jornada de trabajo (polimorfismo)
-- ✅ Validación de datos en tiempo real
-- ✅ Manejo de excepciones
+- Inicio de jornada de trabajo (polimorfismo)
+- Validación de datos en tiempo real
+- Manejo de excepciones
 
 ## 💻 Requisitos
 
