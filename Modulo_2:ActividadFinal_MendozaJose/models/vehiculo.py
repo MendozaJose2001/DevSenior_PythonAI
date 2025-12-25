@@ -45,12 +45,12 @@ class Vehiculo(ABC):
         
         conductor_id = self.conductor.id_conductor if self.conductor else "Sin conductor asignado"
             
-        return(f"\n --- Resumen de Vehiculo --- \n"
+        return(f"\n ------ Resumen de Vehiculo ------ \n"
             f"~ ID: {self.id_vehiculo} \n"
             f"~ Tipo: {self.tipo_vehiculo()} \n"
             f"~ Conductor: {conductor_id} \n"
             f"~ Motor: {self.motor.hp} HP y {self.motor.cilindros} Cilindros \n"
-            "--------------------------------------")
+            "-----------------------------------")
         
 class Moto(Vehiculo, Movible):
     
@@ -63,14 +63,14 @@ class Moto(Vehiculo, Movible):
     
     def mover(self) -> None:
         if self.conductor:
-            print(f"\n!Noticia: La moto {self.id_vehiculo} ha iniciado su jornada de trabajo¡\n")
+            print(f"\nNoticia: La moto {self.id_vehiculo} ha iniciado su jornada de trabajo!\n")
         else:
-            print(f"\n!Noticia: La moto {self.id_vehiculo} no tiene conductor asignado!\n")
+            print(f"\nNoticia: La moto {self.id_vehiculo} no tiene conductor asignado!\n")
         
     def requisitos(self) -> None:
-        print(f"\n --- Requisitos del Vehiculo --- \n"
+        print(f"\n ------ Requisitos: Moto ------ \n"
               f" 1) Casco obligatorio \n"
-              f" ------------------------- \n")
+              f" -------------------------------\n")
         
     def tipo_vehiculo(self) -> str:
         return "Moto"
@@ -87,14 +87,14 @@ class Carro(Vehiculo, Movible):
     
     def mover(self) -> None:
         if self.conductor:
-            print(f"\n!Noticia: El carro {self.id_vehiculo} ha iniciado su jornada de trabajo¡\n")
+            print(f"\nNoticia: El carro {self.id_vehiculo} ha iniciado su jornada de trabajo!\n")
         else:
-            print(f"\n!Noticia: El carro {self.id_vehiculo} no tiene conductor asignado!\n")
+            print(f"\nNoticia: El carro {self.id_vehiculo} no tiene conductor asignado!\n")
         
     def requisitos(self) -> None:
-        print(f"\n --- Requisitos del Vehiculo --- \n"
+        print(f"\n ------ Requisitos: Carro ------ \n"
               f" 1) Revisión técnico-mecánica vigente \n"
-              f" ------------------------- \n")
+              f" -------------------------------\n")
         
     def tipo_vehiculo(self) -> str:
         return "Carro"
@@ -109,15 +109,15 @@ class Camion(Vehiculo, Movible):
     
     def mover(self) -> None:
         if self.conductor:
-            print(f"\n!Noticia: El camión {self.id_vehiculo} ha iniciado su jornada de trabajo¡\n")
+            print(f"\nNoticia: El camión {self.id_vehiculo} ha iniciado su jornada de trabajo!\n")
         else:
-            print(f"\n!Noticia: El camión  {self.id_vehiculo} no tiene conductor asignado!\n")
+            print(f"\nNoticia: El camión  {self.id_vehiculo} no tiene conductor asignado!\n")
         
     def requisitos(self) -> None:
-        print(f"\n --- Requisitos del Vehiculo --- \n"
+        print(f"\n ------ Requisitos: Camión ------ \n"
               f" 1) planilla de carga \n"
               f" 2) máximo peso permitido \n"
-              f" ------------------------- \n")
+              f" -------------------------------\n")
         
     def tipo_vehiculo(self) -> str:
         return "Camión"

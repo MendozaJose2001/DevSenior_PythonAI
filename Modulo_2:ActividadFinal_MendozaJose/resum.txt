@@ -1,0 +1,496 @@
+./models
+
+# ./models/conductor.py
+
+from services.validacion import validar_nombre, validar_id, validar_documento
+
+class Conductor():
+    
+    def __init__(self, nombre: str, id_conductor: int, documento: str, licencia: str) -> None:
+        self.nombre = nombre
+        self.id_conductor = id_conductor
+        self.documento = documento
+        self.licencia = licencia
+        
+    @property
+    def nombre(self) -> str: return self._nombre
+    
+    @property
+    def id_conductor(self) -> int: return self._id_conductor
+    
+    @property
+    def documento(self) -> str: return self._documento
+    
+    @property
+    def licencia(self) -> str: return self._licencia
+    
+    @nombre.setter
+    def nombre(self, valor: str) -> None: self._nombre = validar_nombre(valor)
+        
+    @id_conductor.setter
+    def id_conductor(self, valor: int) -> None: self._id_conductor = validar_id(valor)
+    
+    @documento.setter
+    def documento(self, valor: str) -> None: self._documento = validar_documento(valor)
+    
+    """
+    En colombia, y muchos otros paises, el numero del documento identificacion (cedula)
+    es el mismo numero de licencia de conducir.
+    """
+    @licencia.setter
+    def licencia(self, valor: str) -> None: self._licencia = validar_documento(valor) 
+    
+    
+    def __str__(self) -> str:
+        return(f"\n --- Resumen de Conductor --- \n"
+               f"~ Nombre: {self.nombre} \n"
+               f"~ ID: {self.id_conductor} \n"
+               f"~ Documento: {self.documento} \n"
+               f"~ Licencia: {self.licencia} \n"
+               f"----------------------------- \n")
+    
+***********************
+
+# ./models/motor.py
+
+from services.validacion import validar_int
+
+class Motor():
+    
+    def __init__(self, cilindros: int, hp: int) -> None:
+        self.cilindros = cilindros
+        self.hp = hp
+        
+    @property
+    def cilindros(self) -> int: return self._cilindros
+    
+    @property
+    def hp(self) -> int: return self._hp
+    
+    @cilindros.setter
+    def cilindros(self, valor: int) -> None: self._cilindros = validar_int(valor)
+    
+    @hp.setter
+    def hp(self, valor: int) -> None: self._hp = validar_int(valor)
+        
+    def __str__(self) -> str:
+        return ("\n ---Parametros del Motor--- \n" 
+                f"~ Cilindros = {self.cilindros} \n" 
+                f"~ HP = {self.hp} \n"
+                f"------------------------- \n")
+
+
+******************************
+
+# ./models/movible.py
+
+from abc import ABC, abstractmethod
+
+class Movible(ABC):
+    
+    @abstractmethod
+    def mover(self) -> None:
+        pass
+    
+********************************
+
+# ./models/vehiculo.py
+
+from abc import ABC, abstractmethod
+from typing import Optional
+from services.validacion import validar_id
+from .motor import Motor
+from .conductor import Conductor
+from .movible import Movible
+
+
+class Vehiculo(ABC):
+        
+    def __init__(self, id_vehiculo: int) -> None:
+        self.id_vehiculo = id_vehiculo
+        self.conductor = None
+        
+    @property
+    def id_vehiculo(self) -> int: return self._id_vehiculo
+    
+    @property
+    def conductor(self) -> Optional[Conductor]: return self._conductor
+    
+    @id_vehiculo.setter
+    def id_vehiculo(self, valor: int) -> None: self._id_vehiculo = validar_id(valor)   
+    
+    @conductor.setter
+    def conductor(self, valor: Optional[Conductor]) -> None:
+        if valor is None:
+            self._conductor = valor
+        elif isinstance(valor, Conductor): 
+            self._conductor = valor
+        else:
+            raise ValueError("Se debe ingresar un Objeto tipo Conductor o None")
+ 
+            
+    @abstractmethod
+    def requisitos(self) -> None:
+        pass
+    
+    @abstractmethod
+    def tipo_vehiculo(self) -> str:
+        pass
+    
+    def __str__(self) -> str:
+        
+        conductor_id = self.conductor.id_conductor if self.conductor else "Sin conductor asignado"
+            
+        return(f"\n ------ Resumen de Vehiculo ------ \n"
+            f"~ ID: {self.id_vehiculo} \n"
+            f"~ Tipo: {self.tipo_vehiculo()} \n"
+            f"~ Conductor: {conductor_id} \n"
+            f"~ Motor: {self.motor.hp} HP y {self.motor.cilindros} Cilindros \n"
+            "-----------------------------------")
+        
+class Moto(Vehiculo, Movible):
+    
+    def __init__(self, id_vehiculo: int) -> None:
+        super().__init__(id_vehiculo)
+        self._motor = Motor(1, 50)
+        
+    @property
+    def motor(self) -> Motor: return self._motor
+    
+    def mover(self) -> None:
+        if self.conductor:
+            print(f"\nNoticia: La moto {self.id_vehiculo} ha iniciado su jornada de trabajo!\n")
+        else:
+            print(f"\nNoticia: La moto {self.id_vehiculo} no tiene conductor asignado!\n")
+        
+    def requisitos(self) -> None:
+        print(f"\n ------ Requisitos: Moto ------ \n"
+              f" 1) Casco obligatorio \n"
+              f" -------------------------------\n")
+        
+    def tipo_vehiculo(self) -> str:
+        return "Moto"
+    
+        
+class Carro(Vehiculo, Movible):
+    
+    def __init__(self, id_vehiculo: int) -> None:
+        super().__init__(id_vehiculo)
+        self._motor = Motor(4, 1000)
+        
+    @property
+    def motor(self) -> Motor: return self._motor
+    
+    def mover(self) -> None:
+        if self.conductor:
+            print(f"\nNoticia: El carro {self.id_vehiculo} ha iniciado su jornada de trabajo!\n")
+        else:
+            print(f"\nNoticia: El carro {self.id_vehiculo} no tiene conductor asignado!\n")
+        
+    def requisitos(self) -> None:
+        print(f"\n ------ Requisitos: Carro ------ \n"
+              f" 1) Revisión técnico-mecánica vigente \n"
+              f" -------------------------------\n")
+        
+    def tipo_vehiculo(self) -> str:
+        return "Carro"
+    
+class Camion(Vehiculo, Movible):
+    def __init__(self, id_vehiculo: int) -> None:
+        super().__init__(id_vehiculo)
+        self._motor = Motor(10, 15000)
+        
+    @property
+    def motor(self) -> Motor: return self._motor
+    
+    def mover(self) -> None:
+        if self.conductor:
+            print(f"\nNoticia: El camión {self.id_vehiculo} ha iniciado su jornada de trabajo!\n")
+        else:
+            print(f"\nNoticia: El camión  {self.id_vehiculo} no tiene conductor asignado!\n")
+        
+    def requisitos(self) -> None:
+        print(f"\n ------ Requisitos: Camión ------ \n"
+              f" 1) planilla de carga \n"
+              f" 2) máximo peso permitido \n"
+              f" -------------------------------\n")
+        
+    def tipo_vehiculo(self) -> str:
+        return "Camión"
+
+---------------------------------------
+
+serivices/
+
+# ./services/conductores.py
+
+from typing import Optional, Dict, List
+from models.conductor import Conductor 
+
+
+class Conductores():
+    
+    def __init__(self) -> None:
+        self._conductores: Dict[int, Conductor] = {}
+        
+    def agregar_conductor(self, conductor: Conductor) -> None:
+        
+        if not isinstance(conductor, Conductor):
+            raise ValueError("Se debe ingresar un Objeto tipo Conductor")
+            
+        if conductor.id_conductor in self._conductores:
+            raise ValueError("El Conductor ya se encuentra registrado")
+            
+        self._conductores[conductor.id_conductor] = conductor 
+            
+        
+    def buscar_conductor(self, id: int) -> Optional[Conductor]:
+        return self._conductores.get(id)
+    
+    def eliminar_conductor(self, id: int) -> None:
+        
+        if id not in self._conductores:
+            raise ValueError("El Conductor no se encuentra registrado")
+            
+        del self._conductores[id] 
+        
+    def listar_conductores(self) -> List[Conductor]:
+        return list(self._conductores.values())
+        
+    def tabla_conductores(self) -> None:
+        
+        print(f"----Tabla de Conductores----\n"
+            f"\n ID        Nombre      ")
+        
+        for conductor in self.listar_conductores():
+            print(f"~ {conductor.id_conductor} | {conductor.nombre}")
+            
+        print("\n----------------------------")
+         
+***************************
+
+# ./services/validacion.py
+
+def validar_nombre(valor: str) -> str:
+    if isinstance(valor, str) and valor.strip() != "":
+        return valor.strip().upper()
+    else:
+        raise ValueError("El nombre debe ser un texto no vacio")
+    
+def validar_id(valor: int) -> int:
+    if isinstance(valor, int) and valor > 0:
+        return valor
+    else:
+        raise ValueError("La ID debe ser un entero positivo")
+    
+    
+def validar_documento(valor: str) -> str:
+    if isinstance(valor, str):
+        
+        solo_numeros = "".join(filter(str.isdigit, valor))
+        
+        if 6 <= len(solo_numeros) <= 10: 
+            return solo_numeros
+        else:
+            raise ValueError("En colombia, El numero de documento debe tener de 6 a 10 digitos")  
+    else:
+        raise ValueError("El numero de documento debe ser una cadena de texto")
+    
+    
+def validar_int(valor: int) -> int:
+    if isinstance(valor, int) and valor > 0:
+        return valor
+    else:
+        raise ValueError("El valor ingresado debe ser un entero positivo")
+    
+***************************
+
+# ./services/vehiculos.py
+
+from typing import Optional, Dict, List
+from models.vehiculo import Vehiculo 
+from .validacion import validar_id
+from .conductores import Conductores
+
+class Vehiculos():
+    
+    def __init__(self) -> None:
+        self._vehiculos: Dict[int, Vehiculo] = {}
+        
+    def agregar_vehiculo(self, vehiculo: Vehiculo) -> None:
+        
+        if not isinstance(vehiculo, Vehiculo):
+            raise ValueError("Se debe ingresar un Objeto tipo Vehiculo")
+            
+        if vehiculo.id_vehiculo in self._vehiculos:
+            raise ValueError("El Vehiculo ya se encuentra registrado")
+            
+        self._vehiculos[vehiculo.id_vehiculo] = vehiculo 
+            
+        
+    def buscar_vehiculo(self, id: int) -> Optional[Vehiculo]:        
+        return self._vehiculos.get(id)
+        
+    def modificar_vehiculo(self, 
+                           conductores: Conductores,
+                           id_vehiculo: int, 
+                           id_conductor: Optional[int] = None) -> None:
+        
+        if not isinstance(conductores, Conductores):
+            raise ValueError("Base de Datos no es del tipo Conductores")
+            
+        vehiculo = self.buscar_vehiculo(id_vehiculo)
+        
+        if vehiculo is None: 
+            raise ValueError(f"El vehiculo {id_vehiculo} no esta registrado")
+        
+        if id_conductor is None:
+            vehiculo.conductor = None 
+        else:
+            conductor = conductores.buscar_conductor(id_conductor)
+            
+            if conductor is None: 
+                raise ValueError(f"El conductor {id_conductor} no esta registrado en la base de datos")
+        
+            vehiculo.conductor = conductor
+
+        self._vehiculos[id_vehiculo] = vehiculo
+            
+    def eliminar_vehiculo(self, id: int) -> None:
+        
+        if id not in self._vehiculos:
+            raise ValueError("El vehiculo no se encuentra registrado")
+            
+        del self._vehiculos[id] 
+            
+    def listar_vehiculos(self) -> List[Vehiculo]:
+        return list(self._vehiculos.values())
+        
+    def tabla_vehiculos(self) -> None:
+        
+        
+        print(f"------Tabla de Vehiculos-----\n"
+            f"\n ID        Conductor      ")
+        
+        for vehiculo in self.listar_vehiculos():
+            conductor = vehiculo.conductor.nombre if vehiculo.conductor else "Sin conductor asignado"
+            print(f"~ {vehiculo.id_vehiculo} | {conductor}")
+            
+        print("\n-----------------------------")
+            
+------------------------------------
+
+./
+
+from services.conductores import Conductores
+from services.vehiculos import Vehiculos
+from models.conductor import Conductor
+from models.vehiculo import Moto, Camion, Carro
+
+def poblar_conductores(conductores: Conductores) -> None:
+    
+    C = [Conductor("AAA",1,"111111","111111"),
+        Conductor("BBB",2,"222222","21-13-11#2"),
+        Conductor("CCC",3,"45746801","Hola2356222o"),
+        Conductor("DDD",4,"121424124","13224241"),
+        Conductor("EEE",5,"5667777","wrwr2223211")]
+    
+    for conductor in C:
+        conductores.agregar_conductor(conductor)
+    
+def poblar_vehiculos(vehiculos: Vehiculos) -> None:
+    
+    V = [Moto(1),Carro(2),Camion(3),Moto(4),Carro(5)]
+    
+    for vehiculo in V:
+        vehiculos.agregar_vehiculo(vehiculo)
+            
+def prueba_CRUD_conductores(conductores: Conductores) -> None:
+
+    print(f"\n <<<< Prueba de CRUD para Conductores >>>>\n")
+    print(f"\nTest 1: Agregar Conductores\n")
+    
+    poblar_conductores(conductores)
+    conductores.tabla_conductores()
+    
+    print(f"\nTest 2: Buscar conductor (ID = 1)\n")
+    
+    conductor = conductores.buscar_conductor(id=1)
+    print(conductor)
+    
+    print(f"\nTest 3: Eliminar conductor (ID = 1)\n")
+    
+    conductores.eliminar_conductor(id=1)
+    conductores.tabla_conductores()
+    
+    print(f"\n <<<< Fin de la Prueba de CRUD >>>>\n")
+    
+def prueba_CRUD_vehiculos(vehiculos: Vehiculos, conductores: Conductores) -> None:
+    
+    print(f"\n <<<< Prueba de CRUD para Vehiculos >>>>\n")
+    print(f"\nTest 1: Agregar Vehiculos\n")
+    
+    poblar_vehiculos(vehiculos)
+    vehiculos.tabla_vehiculos()
+    
+    print(f"\nTest 2: Buscar vehiculo (ID = 2)\n")
+    
+    vehiculo_moto = vehiculos.buscar_vehiculo(id=1)
+    print(vehiculo_moto)
+    
+    print(f"\nTest 3: Eliminar vehiculo (ID = 1)\n")
+    
+    vehiculos.eliminar_vehiculo(id=1)
+    vehiculos.tabla_vehiculos()
+    
+    print(f"\nTest 4: Asociar conductores a vehiculo\n")
+    
+    for i in range(2,6):
+        vehiculos.modificar_vehiculo(conductores,id_vehiculo=i,id_conductor=i)
+    vehiculos.tabla_vehiculos()
+    
+    print(f"\nTest 5: Desasociar conductor de vehiculo (ID = 5)\n")
+    
+    vehiculos.modificar_vehiculo(conductores,id_vehiculo=5)
+    vehiculos.tabla_vehiculos()
+    
+    print(f"\n <<<< Fin de la Prueba de CRUD >>>>\n")
+    
+def prueba_reglas_interfaz_vehiculos(vehiculos: Vehiculos) -> None:
+    # Prueba de Interfaz
+    
+    print(f"\n <<<< Prueba de Interfaz: Vehiculos >>>>\n") 
+    
+    for vehiculo in vehiculos.listar_vehiculos():
+        vehiculo.mover()
+        
+    print(f"\n <<<< Prueba de Reglas Diferenciadas: Vehiculos >>>>\n") 
+    
+    for vehiculo in vehiculos.listar_vehiculos():
+        vehiculo.requisitos()
+        
+    print(f"\n <<<< Fin de Pruebas >>>>\n")
+    
+def main():
+    
+    #------------------------------ 
+    # Iniciar base de datos
+    #------------------------------
+    conductores = Conductores()
+    vehiculos = Vehiculos()
+    
+    #------------------------------ 
+    # Prueba funciones CRUDS
+    #------------------------------
+    
+    prueba_CRUD_conductores(conductores)
+    
+    prueba_CRUD_vehiculos(vehiculos, conductores)
+    
+    # ------------------------------
+    # Prueba de Metodos de Vehiculos
+    # ------------------------------
+    
+    prueba_reglas_interfaz_vehiculos(vehiculos)
+    
+if __name__ == "__main__": main()

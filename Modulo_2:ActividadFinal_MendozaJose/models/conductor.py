@@ -45,5 +45,5 @@ class Conductor():
                f"~ ID: {self.id_conductor} \n"
                f"~ Documento: {self.documento} \n"
                f"~ Licencia: {self.licencia} \n"
-               f"------------------------- \n")
+               f"----------------------------- \n")
     

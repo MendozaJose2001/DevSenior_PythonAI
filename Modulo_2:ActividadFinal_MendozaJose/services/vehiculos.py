@@ -62,12 +62,12 @@ class Vehiculos():
     def tabla_vehiculos(self) -> None:
         
         
-        print(f"----------------------------\n"
+        print(f"------Tabla de Vehiculos-----\n"
             f"\n ID        Conductor      ")
         
         for vehiculo in self.listar_vehiculos():
             conductor = vehiculo.conductor.nombre if vehiculo.conductor else "Sin conductor asignado"
             print(f"~ {vehiculo.id_vehiculo} | {conductor}")
             
-        print("\n-------------------------")
+        print("\n-----------------------------")
             

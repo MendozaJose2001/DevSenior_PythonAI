@@ -35,11 +35,11 @@ class Conductores():
         
     def tabla_conductores(self) -> None:
         
-        print(f"-----------------------\n"
+        print(f"----Tabla de Conductores----\n"
             f"\n ID        Nombre      ")
         
         for conductor in self.listar_conductores():
             print(f"~ {conductor.id_conductor} | {conductor.nombre}")
             
-        print("\n-------------------------")
+        print("\n----------------------------")
          
