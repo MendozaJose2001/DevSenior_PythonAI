@@ -34,10 +34,6 @@ def main():
     
     vehiculos.tabla_vehiculos()
     
-    vehiculo.buscar_vehiculo.requisitos()
-    
-    
-    
 if __name__ == "__main__": main()
 
 
