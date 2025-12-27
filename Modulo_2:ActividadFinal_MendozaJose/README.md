@@ -108,6 +108,12 @@ El sistema valida automáticamente:
 - **Conductor**: Instancia válida de `Conductor` o `None`
 - **Vehículo**: Instancia válida de `Vehiculo`
 
+## Video Explicativo
+
+**Enlace al video**: https://youtu.be/MoO0GxATK64
+
+**Duración**: 7:45 minutos
+
 ## 👤 Autor
 
 Mendoza Arango, Jose Daniel
